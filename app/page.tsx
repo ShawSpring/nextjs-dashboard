@@ -27,6 +27,12 @@ export default function Page() {
           >
             <span>Log in</span> <ArrowRightIcon className="w-5 md:w-6" />
           </Link>
+          <Link
+            href="/dashboard"
+            className="w-fit rounded-lg bg-teal-500 px-6 py-3 text-sm font-medium hover:bg-teal-300"
+          >
+            <span>dashboard</span>
+          </Link>
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           {/* Add Hero Images Here */}
