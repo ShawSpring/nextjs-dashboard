@@ -33,7 +33,6 @@ export default function Page() {
           >
             <span>仪表盘</span>
           </Link>
-          git push origin new-branch-name
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           {/* Add Hero Images Here */}
