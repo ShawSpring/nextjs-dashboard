@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { createPool } from '@vercel/postgres';
 import {
   CustomerField,
   CustomersTableType,
@@ -12,6 +12,12 @@ import { formatCurrency } from './utils';
 
 import { unstable_noStore as noStore } from 'next/cache';
 
+const pool = createPool({
+  // query_timeout: parseInt(process.env.QUERY_TIMEOUT ?? '3000'),
+  // query_timeout: 2,
+});
+const sql = pool.sql.bind(pool);
+
 export async function fetchRevenue() {
   // Add ssnoStore() here to prevent the response from being cached.
   // This is equivalent to in fetch(..., {cache: 'no-store'}).
@@ -19,8 +25,8 @@ export async function fetchRevenue() {
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
-
     console.log('Fetching revenue data...');
+
     await new Promise((resolve) => setTimeout(resolve, 3000));
 
     const data = await sql<Revenue>`SELECT * FROM revenue`;
