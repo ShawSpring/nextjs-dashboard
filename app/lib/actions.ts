@@ -8,25 +8,51 @@ import { redirect } from 'next/navigation';
 const InvoiceSchema = z
   .object({
     id: z.string(),
-    customerId: z.string(),
-    amount: z.coerce.number(), // coerce 将字符串转换为数字
-    status: z.enum(['pending', 'paid']),
+    customerId: z.string({
+      invalid_type_error: 'Please select a customer.',
+    }),
+    // coerce 将字符串转换为数字, 空字符串转换为 0
+    amount: z.coerce
+      .number()
+      .gt(0, { message: 'Please enter an amount greater than 0.' }),
+    status: z.enum(['pending', 'paid'], {
+      invalid_type_error: 'Please select an invoice status',
+    }),
     date: z.string(),
   })
   .omit({ id: true, date: true });
 
-export async function createInvoice(formdata: FormData) {
-  //   const rawFormData = {
-  //     customerId: formdata.get('customerId'),
-  //     amount: formdata.get('amount'),
-  //     status: formdata.get('status'),
-  //   };
+export type State = {
+  errors?: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+};
+
+export async function createInvoice(
+  prevState: State,
+  formdata: FormData,
+): Promise<State> {
+  // const rawFormData = {
+  //   customerId: formdata.get('customerId'),
+  //   amount: formdata.get('amount'),
+  //   status: formdata.get('status'),
+  // };
   //* 从键值对列表entries转换为对象
   const rawFormData = Object.fromEntries(formdata.entries());
-  //   for (let key in rawFormData) {
-  //     console.log(key, rawFormData[key], typeof rawFormData[key]);
-  //   }
-  const { customerId, amount, status } = InvoiceSchema.parse(rawFormData);
+  const validatedFields = InvoiceSchema.safeParse(rawFormData);
+  // console.log(validatedFields);
+  if (!validatedFields.success) {
+    //* 返回给state, 本函数已经被useFormState给包裹了
+    return {
+      message: 'Missing Fields. Failed to create invoice',
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { amount, customerId, status } = validatedFields.data;
   const amountInCents = amount * 100; // 以分为单位存储进数据库，可以避免浮点数精度问题
   const date = new Date().toISOString().split('T')[0];
   //   console.log(customerId, amountInCents, status, date);
@@ -36,7 +62,7 @@ export async function createInvoice(formdata: FormData) {
   VALUES (${customerId},${amountInCents},${status},${date})`;
   } catch (error) {
     return {
-      message: 'Database Error: failed to create invoice.',
+      message: 'Database Error: Failed to create invoice.',
     };
   }
   //& 清楚路由缓存，重新验证，即向服务器请求数据来验证，刷新数据来显示
