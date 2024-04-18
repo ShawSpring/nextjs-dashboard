@@ -115,3 +115,25 @@ export async function deleteInvoice(id: string) {
   revalidatePath('/dashboard/invoices');
   //& 不需要redirect,本来就在/dashboard/invoices
 }
+
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth';
+
+export async function authenticate(
+  prevState: string | undefined,
+  formdata: FormData,
+) {
+  try {
+    await signIn('credentials', formdata);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials';
+        default:
+          return 'Something went wrong while signing in';
+      }
+    }
+    throw error; // rethrow other errors
+  }
+}

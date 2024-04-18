@@ -10,7 +10,7 @@ async function Page({ params }: { params: { id: string } }) {
     fetchInvoiceById(invoiceId),
     fetchCustomers(),
   ]);
-  console.log('invoice:', invoice);
+  // console.log('invoice:', invoice);
   if (!invoice) {
     notFound();
   }

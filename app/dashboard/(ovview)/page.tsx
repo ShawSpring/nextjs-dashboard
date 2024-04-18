@@ -9,6 +9,10 @@ import {
   CardsSkeleton,
 } from '@/app/ui/skeletons';
 
+import { Metadata } from 'next';
+export const metadata: Metadata = {
+  title: 'dashboard', // 自动嵌入模板中 template: '%s | Acme Dashboard',
+};
 export default async function Page() {
   return (
     <main>

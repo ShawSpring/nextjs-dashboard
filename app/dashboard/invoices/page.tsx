@@ -8,6 +8,14 @@ import { Suspense } from 'react';
 
 import { fetchInvoicesPages } from '@/app/lib/data';
 
+import { Metadata } from 'next';
+
+//* 该页面的metadata，覆盖全局的metadata
+//* 只管导出，next框架自动应用。 就像填空
+export const metadata: Metadata = {
+  title: 'Invoices | Acme Dashboard',
+};
+
 //* Page是特殊组件，他接收两个props, params和searchParams, 路由参数和查询参数
 //* 所以<Search/> 只是使用Router修改了url, Page再次渲染时，会自动从url里提取searchParams
 export default async function Page({

@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { updateInvoice } from '@/app/lib/actions';
 import { useFormState } from 'react-dom';
+import useMyFormState from '@/app/lib/useMyFormState';
 
 export default function EditInvoiceForm({
   invoice,
@@ -21,7 +22,7 @@ export default function EditInvoiceForm({
 }) {
   //& server action的格式要求，(fromdata)=>void, 因此bind
   const action = updateInvoice.bind(null, invoice.id);
-  const [state, dispatch] = useFormState(action, {
+  const [state, dispatch] = useMyFormState(action, {
     errors: {},
     message: null,
   });
