@@ -8,16 +8,7 @@ import { useEffect } from 'react';
 import Head from 'next/head';
 function Page() {
   //const [data, setData] = useState([]);
-  function handleFetch() {
-    fetch('/api/data')
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log('Fetch error: ', error);
-      });
-  }
+
   useEffect(() => {
     document.title = 'customers| Acme Dashboard';
   }, []);
@@ -26,7 +17,9 @@ function Page() {
     <div>
       <p>customers</p>
       <button
-        onClick={handleFetch}
+        onClick={() => {
+          console.log('click customers');
+        }}
         className="rounded-md bg-cyan-500 px-1 py-2"
       >
         fetch
